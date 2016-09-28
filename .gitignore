@@ -1,0 +1,5 @@
+composer.phar
+grammar.js
+node_modules
+vendor
+*.swp
