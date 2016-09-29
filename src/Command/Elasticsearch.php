@@ -166,8 +166,8 @@ class Elasticsearch extends \ECL\Command {
         // Optionally set date range filter.
         if(!is_null($date_field)) {
             $filter = ['range' => [$date_field => [
-                'gte' => (new \DateTime($from))->format(Date::ATOM),
-                'lt' => (new \DateTime($to))->format(Date::ATOM),
+                'gte' => (new \DateTime('@' . $from))->format(\DateTime::ATOM),
+                'lt' => (new \DateTime('@' . $to))->format(\DateTime::ATOM),
             ]]];
             if(count($filters) > 0) {
                 $filters = ['and' => [$filters, $filter]];
