@@ -14,10 +14,6 @@ class SymbolTable implements \ArrayAccess {
     /** @var Value[] Mapping of symbols to values. */
     private $table = [];
 
-    public function __construct() {
-         // FIXME
-    }
-
     /**
      * Check if the input is a Symbol and resolve it if so.
      * @param Symbol|mixed $sym A symbol object or builtin type.

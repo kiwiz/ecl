@@ -53,6 +53,10 @@ SpecialChar
   = '\\n' { return "\n"; }
   / '\\r' { return "\r"; }
   / '\\t' { return "\t"; }
+RegexVal = $RegexChar*
+RegexChar
+  = '\\/' { return '/'; }
+  / [^/]
 
 
 /**
@@ -95,7 +99,9 @@ Cond = 'if' _ expr:BacktickQuoted _ '{' a:Root '}' b:(_ 'else' _ '{' Root '}')? 
 Elasticsearch = 'es' SEP source:Key opts:(_ ElasticsearchOpts)? _ query:ElasticsearchQuery agg:(_? '|' _? ElasticsearchAgg)? { return $this->es_builder->build($source, $query, count($agg) > 0 ? $agg[3]:null, $opts ? $opts[1]:[]); }
   ElasticsearchOpts = first:ElasticsearchOption rest:(_ ElasticsearchOption)* { return Util::assoc($first, $rest, 1); }
     ElasticsearchOption = '!' field:Key SEP val:Primitive { return [$field, $val]; }
-  ElasticsearchQuery = ElasticsearchQueryOR
+  ElasticsearchQuery
+    = '*' { return ['match_all' => []]; }
+    / ElasticsearchQueryOR
   ElasticsearchAgg = 'agg' SEP agg:(
     AvgAgg / CardinalityAgg / ExtendedStatsAgg / GeoBoundsAgg / GeoCentroidAgg / AvgAgg / MaxAgg / MinAgg / PercentilesAgg / PercentileRanksAgg / StatsAgg / SumAgg / TopHitsAgg / ValueCountAgg /
     DateHistogramAgg / DateRangeAgg / GeoDistanceAgg / GeoHashGridAgg / HistogramAgg / IPv4RangeAgg / MissingAgg / RangeAgg / SignificantTermsAgg / TermsAgg
@@ -188,7 +194,18 @@ ElasticsearchQueryRangeHigh
   = ']' { return 'gte'; }
   / '}' { return 'gt'; }
 
-/* FIXME ->
+
+/**
+ * Special values
+ */
+AggOptions = first:AggOption rest:(_ AggOption)* { return Util::assoc($first, $rest, 1); }
+AggOption = field:Key SEP val:Primitive { return [$field, $val]; }
+
+
+/**
+ * Experimental
+ */
+/*
   JoinType = JoinUnion / JoinDiff / JoinSub / JoinIntersect
     JoinUnion = 'union' { return Command\Join::T_UNION; }
     JoinDiff = 'diff' { return Command\Join::T_DIFF; }
@@ -215,15 +232,4 @@ FieldSort
 Date
   = Integer
   / ('now' / ($[0-9a-zA-Z|/+-]+ '||')) (('+' / '-') Integer ('y' / 'M' / 'w' /'d' / 'h' / 'm' / 's'))* // FIXME
-<- */
-
-/**
- * Special values
- */
-RegexVal = $RegexChar*
-RegexChar
-  = '\\/' { return '/'; }
-  / [^/]
-
-AggOptions = first:AggOption rest:(_ AggOption)* { return Util::assoc($first, $rest, 1); }
-AggOption = field:Key SEP val:Primitive { return [$field, $val]; }
+*/
