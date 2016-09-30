@@ -136,11 +136,12 @@ Example: `tail 5`
 ### Join ###
 
 ```
-join RES=FIELD+FIELD+...
+join:TYPE RES=FIELD+FIELD+...
 ```
 
 Performs an inner join on two result sets.
 
+`TYPE`: The type of join (`inner`, `left`, `right`).
 `RES`: The result set to join with.
 `FIELD`: The field to join on.
 
