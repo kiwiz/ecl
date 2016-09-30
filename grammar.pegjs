@@ -64,7 +64,7 @@ RegexChar
  */
 Value = $[a-zA-Z0-9\._\-]+
 Var = '$' var:$[a-zA-Z0-9_]+ { return new Symbol($var); }
-PathVar = '$' var:$[a-zA-Z0-9_]+ list:('.' $[a-zA-Z0-9_]+)+ { return new Symbol($var, Symbol::T_LIST, Util::pluck($list, 1)); }
+PathVar = '$' var:$[a-zA-Z0-9_]+ list:('.' { return []; } / '.' $[a-zA-Z0-9_]+)+ { return new Symbol($var, Symbol::T_LIST, Util::pluck($list, 1)); }
 IntVar = Var / Integer
 ExprVar = Var / BacktickQuoted
 ValVar = Var / Value
@@ -78,7 +78,8 @@ Boolean
 Number = Float / Integer
 Float = num:$([0-9]+ '.' [0-9]*) { return floatval($num); }
 Integer = num:$[0-9]+ { return intval($num); }
-Primitive = Boolean / Number / Value / DoubleQuoted / SingleQuoted
+Primitive = Boolean / Number / Value / DoubleQuoted / SingleQuoted / Arr
+Arr = '[' first:Primitive rest:(_? ',' _? Primitive)* _? ','? _? ']' { return Util::combine($first, $rest, 3); }
 
 
 /**
@@ -98,7 +99,7 @@ Cond = 'if' _ expr:BacktickQuoted _ '{' a:Root '}' b:(_ 'else' _ '{' Root '}')? 
  */
 Elasticsearch = 'es' SEP source:Key opts:(_ ElasticsearchOpts)? _ query:ElasticsearchQuery agg:(_? '|' _? ElasticsearchAgg)? { return $this->es_builder->build($source, $query, count($agg) > 0 ? $agg[3]:null, $opts ? $opts[1]:[]); }
   ElasticsearchOpts = first:ElasticsearchOption rest:(_ ElasticsearchOption)* { return Util::assoc($first, $rest, 1); }
-    ElasticsearchOption = '!' field:Key SEP val:Primitive { return [$field, $val]; }
+    ElasticsearchOption = '!' field:Key SEP val:PrimVar { return [$field, $val]; }
   ElasticsearchQuery
     = '*' { return ['match_all' => []]; }
     / ElasticsearchQueryOR
@@ -199,7 +200,7 @@ ElasticsearchQueryRangeHigh
  * Special values
  */
 AggOptions = first:AggOption rest:(_ AggOption)* { return Util::assoc($first, $rest, 1); }
-AggOption = field:Key SEP val:Primitive { return [$field, $val]; }
+AggOption = field:Key SEP val:PrimVar { return [$field, $val]; }
 
 
 /**

@@ -11,11 +11,11 @@ Example Programs
 
 ```
 set type="access_log" # Define the type we want to query
-search type:$type > res_a # Query ES for data and store the results into a variable
+es:logstash type:$type > res_a # Query ES for data and store the results into a variable
 if `count(res_a) > 0` { # If we got results...
     # Load up our results and use it in a follow up query.
     # Look for any info_log documents that match any of the `request_uaid`s in our first result set.
-    load res_a | search type:info_log request_uaid:$_.request_uaid
+    load res_a | es:logstash type:info_log request_uaid:$_.request_uaid
 }
 ```
 
@@ -38,7 +38,7 @@ Statements
 The set statement allows you to assign a primitive value to a variable. Has no return value.
 
 `VAR`: The name of the variable.
-`VALUE`: The value to set the variable to. Supports bools, ints and strings.
+`VALUE`: The value to set the variable to. Supports bools, ints, strings and arrays.
 
 Example: `set num=10`
 
@@ -64,7 +64,7 @@ The if statement allows you to branch execution. It accepts an ECL expression wh
 `BRANCH_A`: The truthy branch.
 `BRANCH_B`: The falsey branch.
 
-Example: `if `true` { search:logstash url:"/" } else { search:logstash -url:"/" }`
+Example: `if `true` { es:logstash url:"/" } else { es:logstash -url:"/" }`
 
 
 ### CommandList ###
@@ -167,10 +167,10 @@ Example: `map count=`_ + 3` _type=type -_type`
 ### Search ###
 
 ```
-search:SRC QUERY
+es:SRC QUERY
 ```
 ```
-search:SRC OPTS QUERY | agg:ATYPE AFIELD AOPTS
+es:SRC OPTS QUERY | agg:ATYPE AFIELD AOPTS
 ```
 
 Returns data from ES.
@@ -181,7 +181,9 @@ Returns data from ES.
 `ATYPE`: Aggregation type.
 `AOPTS`: Aggregation options.
 
-Example: `search:logstash type:info_log | agg:terms ip_addr`
+Supports most standard ES syntax with a few extras:
+
+Example: `es:logstash type:info_log | agg:terms ip_addr`
 
 
 ### Sort ###

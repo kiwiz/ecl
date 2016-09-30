@@ -27,7 +27,11 @@ abstract class Agg {
         $key = $table->resolve($this->key, \ECL\Symbol::T_STR);
         $query_key = '$_' . $key;
 
-        $options = array_merge($this->options, ['field' => $key]);
+        $options = [];
+        foreach($this->options as $key=>$val) {
+            $options[$key] = $table->resolve($val);
+        }
+        $options = array_merge($options, ['field' => $key]);
         $agg = [static::TYPE => $options];
 
         if(!is_null($this->agg)) {
