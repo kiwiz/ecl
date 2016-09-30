@@ -85,6 +85,9 @@ class Elasticsearch extends \ECL\Command {
      * Construct the query portion of the request body.
      */
     private function constructQuery(\ECL\SymbolTable $table, array $filters, \ECL\Command\Elasticsearch\Agg $agg=null, array $settings=[]) {
+        foreach($settings as $key=>$val) {
+            $settings[$key] = $table->resolve($val);
+        }
         $from = \ECL\Util::get($settings, 'from', 'now-15m');
         $to = \ECL\Util::get($settings, 'to', 'now');
 

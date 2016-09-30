@@ -40,14 +40,20 @@ class SymbolTable implements \ArrayAccess {
             $val = (string) $val;
             break;
         case Symbol::T_LIST:
-            if(!($val instanceof \ECL\ResultSet)) {
-                throw new WrongTypeException($sym->getName());
+            if(!is_array($val)) {
+                if(!($val instanceof \ECL\ResultSet)) {
+                    throw new WrongTypeException($sym->getName());
+                }
+                $val = array_unique(\ECL\Util::pluck($val->getAll(), $sym->getPath()));
             }
-            $val = array_unique(\ECL\Util::pluck($val->getAll(), $sym->getPath()));
             break;
         case Symbol::T_RES:
-            if(!($val instanceof \ECL\ResultSet)) {
-                throw new WrongTypeException($sym->getName());
+            if(!is_array($val)) {
+                if(!($val instanceof \ECL\ResultSet)) {
+                    throw new WrongTypeException($sym->getName());
+                }
+            } else {
+                $val = new \ECL\ResultSet(array_map(function($x) { return ['value' => $x]; }, $val), ['value']);
             }
             break;
         }
