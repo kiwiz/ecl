@@ -23,7 +23,6 @@ class Elasticsearch extends \ECL\Command {
 
     const LUT_INDEX = 'ecl_lookup';
     const LUT_TYPE = 'table';
-    const LUT_PATH = 'entries';
     /** How long a scroll cursor is valid. */
     const CUR_TTL = '10s';
 
@@ -194,22 +193,32 @@ class Elasticsearch extends \ECL\Command {
         $ret = $table->resolve($node);
         if($node instanceof \ECL\Symbol && $node->getType() == \ECL\Symbol::T_LIST) {
             $id = time() . '_' . rand();
-            $doc = [
-                'entries' => $ret
-            ];
+            $val = \ECL\Util::get($ret, 0);
+            $key = 'entries';
+            if(is_bool($val)) {
+                $key .= '_bool';
+            } else if(is_int($val)) {
+                $key .= '_int';
+            } else if(is_float($val)) {
+                $key .= '_float';
+            } else if (is_string($val)) {
+                $key .= '_string';
+            }
 
             $response = $this->index_client->index([
                 'index' => self::LUT_INDEX,
                 'type' => self::LUT_TYPE,
                 'id' => $id,
-                'body' => $doc
+                'body' => [
+                    $key => $ret
+                ]
             ]);
 
             $ret = [
                 'index' => self::LUT_INDEX,
                 'type' => self::LUT_TYPE,
                 'id' => $id,
-                'path' => self::LUT_PATH
+                'path' => $key
             ];
         }
         return $ret;
