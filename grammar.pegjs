@@ -64,7 +64,10 @@ RegexChar
  */
 Value = $[a-zA-Z0-9\._\-]+
 Var = '$' var:$[a-zA-Z0-9_]+ { return new Symbol($var); }
-PathVar = '$' var:$[a-zA-Z0-9_]+ list:('.' { return []; } / '.' $[a-zA-Z0-9_]+)+ { return new Symbol($var, Symbol::T_LIST, Util::pluck($list, 1)); }
+PathVar = '$' var:$[a-zA-Z0-9_]+ list:PathList { return new Symbol($var, Symbol::T_LIST, $list); }
+  PathList
+    = list:('.' $[a-zA-Z0-9_]+)+ { return Util::pluck($list, 1); }
+    / '.' { return []; }
 IntVar = Var / Integer
 ExprVar = Var / BacktickQuoted
 ValVar = Var / Value
@@ -143,13 +146,17 @@ Sort = 'sort' _ sort:(SortExpr / SortFields) { return $sort; }
   SortExpr = expr:ExprVar { return new Command\Sort\Expr($expr); }
   SortFields = first:SortClause rest:(_ SortClause)* { return new Command\Sort\Fields(Util::combine($first, $rest, 1)); }
     SortClause = key:KeyVar ',' type:SortType { return [$key, $type]; }
-      SortType = Asc / Desc
-        Asc = 'asc' { return Command\Sort\Fields::T_ASC; }
-        Desc = 'desc' { return Command\Sort\Fields::T_DESC; }
+      SortType = SortAsc / SortDesc
+        SortAsc = 'asc' { return Command\Sort\Fields::T_ASC; }
+        SortDesc = 'desc' { return Command\Sort\Fields::T_DESC; }
 
 Filter = 'filter' _ expr:ExprVar { return new Command\Filter($expr); }
 
-Join = 'join' _ source:Key '=' first:KeyVar rest:('+' rest:KeyVar)* { return new Command\Join($source, Util::combine($first, $rest, 1)); }
+Join = 'join' SEP type:JoinType _ source:Key '=' first:KeyVar rest:('+' rest:KeyVar)* { return new Command\Join($source, Util::combine($first, $rest, 1), $type); }
+  JoinType = JoinInner / JoinLeft / JoinRight
+    JoinInner = 'inner' { return Command\Join::T_INNER; }
+    JoinLeft = 'left' { return Command\Join::T_LEFT; }
+    JoinRight = 'right' { return Command\Join::T_RIGHT; }
 
 Load = 'load' _ first:Key rest:(',' Key)* { return new Command\Load(Util::combine($first, $rest, 1)); }
 
