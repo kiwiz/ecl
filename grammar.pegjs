@@ -2,7 +2,7 @@
  * Root definitions
  */
 Root = _? first:Statement rest:(_? ';' _? Statement)* _? ';'? _? { return Util::combine($first, $rest, 3); }
-  Statement = CommandList / Set / Cond
+  Statement = CommandList / Set / Cond / Loop
 
 
 /**
@@ -96,6 +96,8 @@ CommandList = first:CommandPair rest:(_? '|' _? CommandPair)* { return new State
 Set = 'set' _ target:Key '=' val:Primitive { return new Statement\Set($target, $val); }
 
 Cond = 'if' _ expr:BacktickQuoted _ '{' a:Root '}' b:(_ 'else' _ '{' Root '}')? { return new Statement\Cond($expr, $a, $b ? $b[4]:null); }
+
+Loop = 'for' _ source:Key _ '{' root:Root '}' { return new Statement\Loop($source, $root); }
 
 /**
  * Commands

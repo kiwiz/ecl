@@ -23,8 +23,8 @@ class Expr extends \ECL\Command\Sort {
         $ret = $result->getAll();
 
         $el = new \ECL\ExpressionLanguage;
-        usort($ret, function($a, $b) use ($el, $expr) {
-            return (int) $el->evaluate($expr, ['a' => $a, 'b' => $b]);
+        usort($ret, function($a, $b) use ($el, $expr, $table) {
+            return (int) $el->evaluate($expr, new \ECL\ArrayUnion([['a' => $a, 'b' => $b], $table]));
         });
 
         return new \ECL\ResultSet($ret);

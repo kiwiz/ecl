@@ -24,7 +24,7 @@ class Filter extends \ECL\Command {
 
         $el = new \ECL\ExpressionLanguage;
         foreach($result->getAll() as $entry) {
-            if($el->evaluate($expr, ['_' => $entry])) {
+            if($el->evaluate($expr, new \ECL\ArrayUnion([['_' => $entry], $table]))) {
                 $ret[] = $entry;
             }
         }
