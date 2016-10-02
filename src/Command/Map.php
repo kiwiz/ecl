@@ -56,7 +56,7 @@ class Map extends \ECL\Command {
                     $expr = $table->resolve($clause[2], \ECL\Symbol::T_STR);
                     if(array_key_exists($key, $entry)) {
                         $el = new \ECL\ExpressionLanguage;
-                        $entry[$key] = $el->evaluate($expr, ['_' => $entry[$key]]);
+                        $entry[$key] = $el->evaluate($expr, new \ECL\ArrayUnion([['_' => $entry[$key]], $table]));
                     }
                     break;
                 }
