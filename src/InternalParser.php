@@ -677,35 +677,21 @@ class InternalParser{
     private function peg_parse_() {
 
       $this->peg_silentFails++;
-      $s0 = $this->peg_currPos;
+      $s0 = $this->peg_c2;
       $s1 = $this->peg_parseWhitespace();
       if ($s1 === $this->peg_FAILED) {
-        $s1 = $this->peg_c1;
+        $s1 = $this->peg_parseComment();
       }
       if ($s1 !== $this->peg_FAILED) {
-        $s2 = $this->peg_parseComment();
-        if ($s2 !== $this->peg_FAILED) {
-          $s3 = $this->peg_parseWhitespace();
-          if ($s3 === $this->peg_FAILED) {
-            $s3 = $this->peg_c1;
+        while ($s1 !== $this->peg_FAILED) {
+          $s0[] = $s1;
+          $s1 = $this->peg_parseWhitespace();
+          if ($s1 === $this->peg_FAILED) {
+            $s1 = $this->peg_parseComment();
           }
-          if ($s3 !== $this->peg_FAILED) {
-            $s1 = array($s1, $s2, $s3);
-            $s0 = $s1;
-          } else {
-            $this->peg_currPos = $s0;
-            $s0 = $this->peg_c0;
-          }
-        } else {
-          $this->peg_currPos = $s0;
-          $s0 = $this->peg_c0;
         }
       } else {
-        $this->peg_currPos = $s0;
         $s0 = $this->peg_c0;
-      }
-      if ($s0 === $this->peg_FAILED) {
-        $s0 = $this->peg_parseWhitespace();
       }
       $this->peg_silentFails--;
       if ($s0 === $this->peg_FAILED) {

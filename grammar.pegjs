@@ -9,9 +9,7 @@ Root = _? first:Statement rest:(_? ';' _? Statement)* _? ';'? _? { return Util::
  * Misc
  */
 SEP = ':'
-_ "WhitespaceOrComment"
-  = Whitespace? Comment Whitespace?
-  / Whitespace
+_ "WhitespaceOrComment" = (Whitespace / Comment)+
 Comment = '#' [^\r\n]*
 Whitespace = WhitespaceChar+
 WhitespaceChar = [ \t\n\r]
