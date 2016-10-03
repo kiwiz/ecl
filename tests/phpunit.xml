@@ -4,6 +4,13 @@
       <directory>unit</directory>
     </testsuite>
   </testsuites>
+
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">../src</directory>
+    </whitelist>
+  </filter>
+
   <logging>
     <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
   </logging>

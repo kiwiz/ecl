@@ -34,6 +34,23 @@ class Elasticsearch extends \ECL\Command {
     public function __construct($query=[], $agg=null, array $settings=[]) {
         $this->query = $query;
         $this->agg = $agg;
+
+        $this->setSettings($settings);
+    }
+
+    /**
+     * Get the current list of settings.
+     * @param array $settings List of settings.
+     */
+    public function getSettings() {
+        return $this->settings;
+    }
+
+    /**
+     * Set the current list of settings.
+     * @param array $settings List of settings to apply.
+     */
+    public function setSettings(array $settings) {
         $this->settings = $settings;
 
         $hosts = \ECL\Util::get($settings, 'hosts', []);
@@ -87,8 +104,8 @@ class Elasticsearch extends \ECL\Command {
         foreach($settings as $key=>$val) {
             $settings[$key] = $table->resolve($val);
         }
-        $from = \ECL\Util::get($settings, 'from', 'now-15m');
-        $to = \ECL\Util::get($settings, 'to', 'now');
+        $from = \ECL\Util::get($settings, 'from');
+        $to = \ECL\Util::get($settings, 'to');
 
         $query_data = [
             'ignore_unavailable' => true,
@@ -104,7 +121,7 @@ class Elasticsearch extends \ECL\Command {
         $query_settings = [
             'flatten' => \ECL\Util::get($settings, 'flatten', true),
             'scroll' => false,
-            'count' => false,
+            'count' => \ECL\Util::get($settings, 'count', false),
         ];
 
         // Optionally set index.
@@ -112,7 +129,11 @@ class Elasticsearch extends \ECL\Command {
             $index = $settings['index'];
 
             if(\ECL\Util::get($settings, 'date_based', false)) {
-                $index = implode(',', \ECL\Util::getIndices($index, $from, $to));
+                $indices = \ECL\Util::getIndices($index, $from, $to);
+                if(count($indices) == 0) {
+                    throw new Exception('Empty index list');
+                }
+                $index = implode(',', $indices);
             }
             $query_data['index'] = $index;
         }
@@ -281,6 +302,7 @@ class Elasticsearch extends \ECL\Command {
         // If we're only returning hits, we can return the count here.
         if($query_settings['count']) {
             $results[] = ['count' => array_sum(array_map(function($x) { return $x['hits']['total']; }, $result_set))];
+            return;
         }
 
         foreach($result_set as $result) {
