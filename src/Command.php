@@ -15,7 +15,3 @@ namespace ECL {
         abstract public function process(SymbolTable $table);
     }
 }
-
-namespace ECL\Command {
-    class Exception extends \ECL\Exception {}
-}
