@@ -8,12 +8,35 @@ namespace ECL;
  * @package ECL
  */
 class Util {
+    /**
+     * Return the value of a key or a default value.
+     * @param mixed $arr The array.
+     * @param string $key The key.
+     * @param mixed $default The default value to return.
+     * @return mixed|null The value of that key.
+     */
     public static function get($arr, $key, $default=null) {
-        return array_key_exists($key, $arr) ? $arr[$key]:$default;
+        return self::exists($arr, $key) ? $arr[$key]:$default;
     }
 
+    /**
+     * Determines whether an array contains a certain key.
+     * @param mixed $arr The array.
+     * @param string $key The key.
+     * @return bool true if the key exists and false otherwise.
+     */
     public static function exists($arr, $key) {
-        return array_key_exists($key, $arr);
+        // If it's an object, index directly because array_key_exists doesn't
+        // work with the ArrayAccess interface. Otherwise, check if it implements
+        // ArrayAccess and fall back to array_key_exists.
+        if(is_object($arr)) {
+            return isset($arr[$key]);
+        }
+        if(is_array($arr)) {
+            return array_key_exists($key, $arr);
+        }
+
+        return false;
     }
 
     /**
