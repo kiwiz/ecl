@@ -37,7 +37,7 @@ class ArrayUnion implements \ArrayAccess {
      */
     public function &offsetGet($key) {
         for($i = 0; $i < count($this->arrays); ++$i) {
-            if(array_key_exists($key, $this->arrays[$i])) {
+            if(Util::exists($this->arrays[$i], $key)) {
                 return $this->arrays[$i][$key];
             }
         }
