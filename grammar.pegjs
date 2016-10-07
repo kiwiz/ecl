@@ -1,9 +1,13 @@
 /**
  * Root definitions
  */
-Root = _? first:Statement rest:(_? ';' _? Statement)* _? ';'? _? { return Util::combine($first, $rest, 3); }
-  Statement = CommandList / Set / Cond / Loop
+Root = _? first:Statement rest:(_? Statement)* _? { return Util::combine($first, $rest, 3); }
+  Statement = BlockStatement / LineStatement
+    BlockStatement = Cond / Loop
+    LineStatement = stmt:(Set / CommandList) _? ';' { return $stmt; }
 
+StatementSep
+= _? (';' / "\n") _?
 
 /**
  * Misc
