@@ -6,9 +6,6 @@ Root = _? first:Statement rest:(_? Statement)* _? { return Util::combine($first,
     BlockStatement = Cond / Loop
     LineStatement = stmt:(Set / CommandList) _? ';' { return $stmt; }
 
-StatementSep
-= _? (';' / "\n") _?
-
 /**
  * Misc
  */
