@@ -14,7 +14,7 @@ class ArrayUnion implements \ArrayAccess {
     /**
      * @param array[] Arrays.
      */
-    public function __construct($arrays) {
+    public function __construct(array $arrays) {
         $this->arrays = $arrays;
     }
 
@@ -57,7 +57,7 @@ class ArrayUnion implements \ArrayAccess {
      * @return bool Whether the symbol exists.
      */
     public function offsetExists($key) {
-        foreach($arrays as $array) {
+        foreach($this->arrays as $array) {
             if(array_key_exists($key, $array)) {
                 return true;
             }
