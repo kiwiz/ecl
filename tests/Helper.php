@@ -7,4 +7,11 @@ class Helper {
 
         return $symtab;
     }
+
+    public static function invokeMethod(&$object, $methodName, array $parameters=[]) {
+        $reflection = new \ReflectionClass(is_string($object) ? $object:get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+        return $method->invokeArgs($method->isStatic() ? null:$object, $parameters);
+    }
 }

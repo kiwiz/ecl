@@ -1,7 +1,7 @@
 /**
  * Root definitions
  */
-Root = _? first:Statement rest:(_? Statement)* _? { return Util::combine($first, $rest, 3); }
+Root = _? first:Statement rest:(_? Statement)* _? { return Util::combine($first, $rest, 1); }
   Statement = BlockStatement / LineStatement
     BlockStatement = Cond / Loop
     LineStatement = stmt:(Set / CommandList) _? ';' { return $stmt; }

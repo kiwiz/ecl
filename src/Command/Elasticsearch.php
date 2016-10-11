@@ -8,9 +8,9 @@ namespace ECL\Command;
  * @package ECL
  */
 class Elasticsearch extends \ECL\Command {
-    /** @var \Elasticsearch\Elasticsearch Client object. */
+    /** @var \Elasticsearch\Client Client object. */
     private $client = null;
-    /** @var \Elasticsearch\Elasticsearch Client object for indexing. */
+    /** @var \Elasticsearch\Client Client object for indexing. */
     private $index_client = null;
     /** @var array Query structure. */
     private $query = [];
@@ -74,7 +74,7 @@ class Elasticsearch extends \ECL\Command {
 
     /**
      * Get the ES client object.
-     * @return \Elasticsearch\Elasticsearch
+     * @return \Elasticsearch\Client
      */
     public function getClient() {
         return $this->client;
@@ -82,10 +82,26 @@ class Elasticsearch extends \ECL\Command {
 
     /**
      * Get the ES index client object.
-     * @return \Elasticsearch\Elasticsearch
+     * @return \Elasticsearch\Client
      */
     public function getIndexClient() {
         return $this->index_client;
+    }
+
+    /**
+     * Set the ES client object.
+     * @param \Elasticsearch\Client $client
+     */
+    public function setClient(\Elasticsearch\Client $client) {
+        $this->client = $client;
+    }
+
+    /**
+     * Set the ES index client object.
+     * @param \Elasticsearch\Client $index_client
+     */
+    public function setIndexClient(\Elasticsearch\Client $index_client) {
+        $this->index_client = $index_client;
     }
 
     public function process(\ECL\SymbolTable $table) {
