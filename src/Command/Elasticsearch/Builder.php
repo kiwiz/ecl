@@ -6,7 +6,7 @@ namespace ECL\Command\Elasticsearch;
  * Elasticsearch Builder
  * Initializes Elasticsearch Commands
  */
-class Builder extends \ECL\Command\Elasticsearch {
+class Builder {
     /**
      * @var array[] Mapping of ES sources, keyed on the name of the source.
      * Each entry has the following values:
@@ -24,15 +24,15 @@ class Builder extends \ECL\Command\Elasticsearch {
     /**
      * Apply a new search
      */
-    public function setSources($sources) {
+    public function setSources(array $sources) {
         $this->sources = $sources;
     }
 
-    public function setSettings($settings) {
+    public function setSettings(array $settings) {
         $this->settings = $settings;
     }
 
-    public function build($source, $query, $agg=null, $settings) {
+    public function build($source, array $query=[], $agg=null, array $settings=[]) {
         return new \ECL\Command\Elasticsearch(
             $query, $agg,
             array_merge(\ECL\Util::get($this->sources, $source, []), $this->settings, $settings)
