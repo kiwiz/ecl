@@ -1,0 +1,61 @@
+#!/usr/bin/php
+<?php
+
+require('vendor/autoload.php');
+
+const RANGE = 10;
+
+$es_builder = new \ECL\Command\Elasticsearch\Builder;
+$es_builder->setSources([
+    'logstash' => [
+        'hosts' => ['localhost:9200'],
+        'index' => 'logstash',
+        'date_based' => true,
+        'date_field' => '@timestamp',
+    ]
+]);
+$parser = new \ECL\Parser();
+$parser->setESBuilder($es_builder);
+$scheduler = new \ECL\Scheduler;
+$table = new \ECL\SymbolTable;
+
+while(($cmd_str = readline('> ')) !== false) {
+    if(strlen($cmd_str) == 0) {
+        continue;
+    }
+    if($cmd_str == 'exit') {
+        break;
+    }
+
+
+    readline_add_history($cmd_str);
+    try {
+        $commandlist = $parser->parse($cmd_str);
+    } catch(\ECL\SyntaxError $e) {
+        $start = $e->grammarOffset < (RANGE / 2) ? 0: $e->grammarOffset - (RANGE / 2);
+        $end = $start + RANGE;
+        $pos = $e->grammarOffset < (RANGE / 2) ? $e->grammarOffset:(RANGE / 2);
+        printf("%s\n%s\n%s\n",
+            $e->getMessage(),
+            substr($cmd_str, $start, $end),
+            str_repeat(' ', $pos) . '^'
+        );
+        continue;
+    }
+
+    try {
+        $res = $scheduler->process($commandlist, $table);
+    } catch(\ECL\KeyNotFoundException $e) {
+        printf("Key not found: %s\n", $e->getMessage());
+        continue;
+    } catch(\ECL\WrongTypeException $e) {
+        printf("Wrong type: %s\n", $e->getMessage());
+        continue;
+    }
+
+    foreach($res as $r) {
+        foreach($r->getAll() as $line) {
+            print(json_encode($line) . "\n");
+        }
+    }
+}
