@@ -10,7 +10,7 @@ use \Symfony\Component\ExpressionLanguage as SEL;
  * @package ECL
  */
 class ExpressionLanguage extends SEL\ExpressionLanguage {
-    /** @var Whitelisted functions available in ExpressionLanguage. */
+    /** @var string[] Whitelisted functions available in ExpressionLanguage. */
     private static $FUNCTIONS = [
         'explode', 'implode', 'trim', 'substr', 'str_replace', 'strlen', 'strcmp', 'count',
         'base64_encode', 'base64_decode', 'urldecode', 'urlencode', 'hex2bin', 'bin2hex', 'json_encode', 'json_decode',
@@ -46,11 +46,11 @@ class ExpressionLanguage extends SEL\ExpressionLanguage {
     /**
      * Evaluate an expression.
      * Overridden to allow passing in a SymbolTable.
-     * @param Expression|string $expression
+     * @param \Symfony\Component\ExpressionLanguage\Expression|string $expression
      * @param SymbolTable|array $values
      * @return mixed
      */
-    public function evaluate($expression, $values) {
+    public function evaluate($expression, $values=[]) {
         if(is_array($values)) {
             return parent::evaluate($expression, $values);
         } else {

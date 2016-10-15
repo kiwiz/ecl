@@ -22,7 +22,7 @@ class Join extends \ECL\Command {
     const T_RIGHT = 2;
 
     /**
-     * @param string $type Joining ResultSet.
+     * @param int $type Joining ResultSet.
      * @param string[] $keys Joining keys.
      */
     public function __construct($source, $keys, $type) {

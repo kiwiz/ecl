@@ -7,11 +7,11 @@ namespace ECL\Statement;
  * Executes a sequence of Commands.
  */
 class CommandList extends \ECL\Statement {
-    /** @var Command[] The list of Commands to execute. */
+    /** @var \ECL\Command[] The list of Commands to execute. */
     private $commands = [];
 
     /**
-     * @param Command[] $commands The list of Commands.
+     * @param \ECL\Command[] $commands The list of Commands.
      */
     public function __construct($commands) {
         $this->commands = $commands;
@@ -20,7 +20,7 @@ class CommandList extends \ECL\Statement {
     /**
      * Process the list of Commands.
      * @param SymbolTable $table The global SymbolTable.
-     * @return ResultSet[] The result from the last Command or an empty array.
+     * @return \ECL\ResultSet[] The result from the last Command or an empty array.
      */
     public function process(\ECL\SymbolTable $table) {
         $results = [];

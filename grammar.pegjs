@@ -81,7 +81,7 @@ Number = Float / Integer
 Float = num:$([0-9]+ '.' [0-9]*) { return floatval($num); }
 Integer = num:$[0-9]+ { return intval($num); }
 Primitive = Boolean / Number / Value / DoubleQuoted / SingleQuoted / Arr
-Arr = '[' first:Primitive rest:(_? ',' _? Primitive)* _? ','? _? ']' { return Util::combine($first, $rest, 3); }
+Arr = '[' _? first:Primitive rest:(_? ',' _? Primitive)* _? ','? _? ']' { return Util::combine($first, $rest, 3); }
 
 
 /**
@@ -115,7 +115,7 @@ Elasticsearch = 'es' SEP source:Key opts:(_ ElasticsearchOpts)? _ query:Elastics
     AvgAgg = 'avg' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\Avg($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
     CardinalityAgg = 'cardinality' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\Cardinality($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
     ExtendedStatsAgg = 'extended_stats' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\ExtendedStats($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
-    GeoBoundsAgg = 'geo_bound' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\GeoBound($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
+    GeoBoundsAgg = 'geo_bound' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\GeoBounds($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
     GeoCentroidAgg = 'geo_centroid' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\GeoCentroid($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
     MaxAgg = 'max' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\Max($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
     MinAgg = 'min' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Metrics\Min($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
