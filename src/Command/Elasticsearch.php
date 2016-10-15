@@ -219,6 +219,10 @@ class Elasticsearch extends \ECL\Command {
         return $filters;
     }
 
+    /**
+     * @param \ECL\SymbolTable
+     * @param array|\ECL\Symbol
+     */
     private function resolveFilter(\ECL\SymbolTable $table, $node) {
         if(is_array($node)) {
             foreach($node as $k=>$entry) {

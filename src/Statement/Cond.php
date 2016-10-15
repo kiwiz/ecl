@@ -9,15 +9,15 @@ namespace ECL\Statement;
 class Cond extends \ECL\Statement {
     /** @var \ECL\Symbol|string The expression string to use. */
     private $expr = null;
-    /** @var Statement[] Branch to execute if expression is true. */
+    /** @var \ECL\Statement[] Branch to execute if expression is true. */
     private $pos_case = [];
-    /** @var Statement[] Branch to execute if expression is false. */
+    /** @var \ECL\Statement[] Branch to execute if expression is false. */
     private $neg_case = [];
 
     /**
      * @param \ECL\Symbol|string SEL expression
-     * @param Statement[] $pos_case Positive branch
-     * @param Statement[] $pos_case Negative branch
+     * @param \ECL\Statement[] $pos_case Positive branch
+     * @param \ECL\Statement[] $pos_case Negative branch
      */
     public function __construct($expr, $pos_case, $neg_case=null) {
         $this->expr = $expr;

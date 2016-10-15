@@ -9,12 +9,12 @@ namespace ECL\Statement;
 class Loop extends \ECL\Statement {
     /** @var string The symbol to loop over. */
     private $source = null;
-    /** @var Statement[] Block to execute. */
+    /** @var \ECL\Statement[] Block to execute. */
     private $statements = [];
 
     /**
      * @param string $source Source name.
-     * @param Statement[] $statements Code block to execute.
+     * @param \ECL\Statement[] $statements Code block to execute.
      */
     public function __construct($source, $statements) {
         $this->source = $source;

@@ -50,7 +50,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate {
      */
     public function &offsetGet($n) {
         if(!$this->offsetExists($n)) {
-            throw new IndexNotFoundException($n);
+            throw new IndexNotFoundException((string) $n);
         }
         return $this->data[$n];
     }
@@ -97,10 +97,16 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate {
 
 class ResultSetIterator implements \Iterator {
     private $i = 0;
+    /** @var ResultSet */
+    private $result;
+
+    /**
+     * @param ResultSet
+     */
     public function __construct($result) {
         $this->result = $result;
     }
-    public function current() { return $this->offsetGet($this->i); }
+    public function current() { return $this->result->offsetGet($this->i); }
     public function key() { return $this->i; }
     public function next() { ++$this->i; }
     public function rewind() { $this->i = 0; }
