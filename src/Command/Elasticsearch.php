@@ -172,12 +172,18 @@ class Elasticsearch extends \ECL\Command {
             ]
         ];
 
+        // Optionally set result set size.
+        if(!is_null($size)) {
+            $query_body['size'] = $size;
+        }
+
         // Optionally set aggregations
         if(!is_null($agg)) {
             $query_body['aggs'] = $agg->constructQuery($table);
             // When executing an agg, we don't care about the actual hits.
             $query_body['size'] = 0;
         }
+
         // Optionally set list of fields to return.
         if(!is_null($fields)) {
             $query_body['_source'] = ['include' => $fields];
@@ -186,11 +192,6 @@ class Elasticsearch extends \ECL\Command {
         // Optionally set sort order.
         if(!is_null($sort)) {
             $query_body['sort'] = array_map(function($x) { return [$x[0] => ['order' => $x[1] ? 'asc':'desc']]; }, $sort);
-        }
-
-        // Optionally set result set size.
-        if(!is_null($size)) {
-            $query_body['size'] = $size;
         }
 
         return $query_body;
