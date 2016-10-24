@@ -24,11 +24,11 @@ Example Programs
 
 ```
 set type="access_log"; # Define the type we want to query
-es:logstash type:$type > res_a; # Query ES for data and store the results into a variable
+es:logstash _type:$type > res_a; # Query ES for data and store the results into a variable
 if `count(res_a) > 0` { # If we got results...
     # Load up our results and use it in a follow up query.
     # Look for any info_log documents that match any of the `request_uaid`s in our first result set.
-    load res_a | es:logstash type:info_log request_uaid:$_.request_uaid;
+    load res_a | es:logstash _type:info_log request_uaid:$_.request_uaid;
 }
 ```
 
@@ -226,7 +226,7 @@ Returns data from ES.
 
 Supports most standard ES syntax with a few extras:
 
-Example: `es:logstash type:info_log | agg:terms ip_addr`
+Example: `es:logstash _type:info_log | agg:terms ip_addr`
 
 
 ### Sort ###
