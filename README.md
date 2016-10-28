@@ -1,6 +1,8 @@
 ECL
 ===
 
+[![Build Status](https://travis-ci.org/kiwiz/ecl.svg?branch=master)](https://travis-ci.org/kiwiz/ecl)
+
 ECL is a simple query language intended for use with data sources that generate tabulated data. It allows you to query data from these sources and do some limited manipulation. It supports conditional statements, loops, variables and comments. There are almost certainly bugs. Pls report!
 
 
