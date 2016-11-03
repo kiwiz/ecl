@@ -4,7 +4,10 @@ php:
   - '5.5'
   - '5.6'
   - '7.0'
-script: phpunit --configuration tests/phpunit.xml
+script:
+  - mkdir -p build/logs
+  - phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/test-reporter
 addons:
     code_climate:
         repo_token: 574de68c31068574f899721dd3fb14506cc4fcb73cb1ee4bd1f80dab3a110def
