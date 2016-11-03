@@ -5,6 +5,7 @@ php:
   - '5.6'
   - '7.0'
 script:
+  - composer require "codeclimate/php-test-reporter" "dev-master"
   - mkdir -p build/logs
   - phpunit --configuration tests/phpunit.xml --coverage-clover build/logs/clover.xml
   - ./vendor/bin/test-reporter
