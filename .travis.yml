@@ -5,3 +5,7 @@ php:
   - '5.6'
   - '7.0'
 script: phpunit --configuration tests/phpunit.xml
+addons:
+    code_climate:
+        repo_token: 574de68c31068574f899721dd3fb14506cc4fcb73cb1ee4bd1f80dab3a110def
+
