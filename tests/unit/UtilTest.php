@@ -49,18 +49,20 @@ class UtilTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(ECL\Util::pluck($arr, $key), $expected);
     }
 
-    public function getIndicesProvider() {
+    public function generateDateIndicesProvider() {
         return [
-            ['X', 946771200, 946771200, ['X-2000.01.02']],
-            ['X', 946771199, 946771200, ['X-2000.01.01', 'X-2000.01.02']],
-
+            ['[abc-]Y', 'y', 1451606400, 1483228800, ['abc-2016', 'abc-2017']],
+            ['[abc-]m', 'm', 1451606400, 1454284800, ['abc-01', 'abc-02']],
+            ['[abc-]W', 'w', 1451606400, 1452211200, ['abc-53', 'abc-01']],
+            ['[abc-]Y.m.d', 'd', 1451606400, 1451692800, ['abc-2016.01.01', 'abc-2016.01.02']],
+            ['[abc-]H', 'h', 1451606400, 1451613600, ['abc-00', 'abc-01', 'abc-02']],
         ];
     }
 
     /**
-     * @dataProvider getIndicesProvider
+     * @dataProvider generateDateIndicesProvider
      */
-    public function testGetIndices($index, $from_ts, $to_ts, $expected) {
-        $this->assertSame(ECL\Util::getIndices($index, $from_ts, $to_ts), $expected);
+    public function testGenerateDateIndices($format, $interval, $from_ts, $to_ts, $expected) {
+        $this->assertSame(ECL\Util::generateDateIndices($format, $interval, $from_ts, $to_ts), $expected);
     }
 }

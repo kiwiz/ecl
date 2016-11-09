@@ -145,7 +145,7 @@ class Elasticsearch extends \ECL\Command {
             $index = $settings['index'];
 
             if(\ECL\Util::get($settings, 'date_based', false)) {
-                $indices = \ECL\Util::getIndices($index, $from, $to);
+                $indices = \ECL\Util::generateDateIndices($index, $settings['date_interval'], $from, $to);
                 if(count($indices) == 0) {
                     throw new Exception('Empty index list');
                 }
