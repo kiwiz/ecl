@@ -10,15 +10,15 @@ engines:
   phpmd:
     enabled: true
     checks:
-    Controversial/CamelCasePropertyName:
-      enabled: false
-    CleanCode/StaticAccess:
-      enabled: false
-    Controversial/CamelCaseParameterName:
-      enabled: false
+      Controversial/CamelCasePropertyName:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      Controversial/CamelCaseParameterName:
+        enabled: false
 ratings:
   paths:
   - "**.php"
 exclude_paths:
 - tests/
-- "src/Command/InternalParser.php"
+- "src/InternalParser.php"
