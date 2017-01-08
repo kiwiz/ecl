@@ -18,8 +18,6 @@ class Elasticsearch extends \ECL\Command {
     private $settings = [];
     /** @var \ECL\Command\Elasticsearch\Agg|null $agg Optional aggregation. */
     private $agg = null;
-    /** @var callable|null Connection provider. */
-    private $conn_provider = null;
 
     const LUT_INDEX = 'ecl_lookup';
     const LUT_TYPE = 'table';
@@ -276,11 +274,9 @@ class Elasticsearch extends \ECL\Command {
         $result_set = [];
 
         if($query_settings['scroll']) {
-            $cursor_lifetime = self::CUR_TTL;
-            $query_data['scroll'] = '10s';
+            $query_data['scroll'] = self::CUR_TTL;
             $response = $this->client->search($query_data);
 
-            $state = [];
             do {
                 if(!array_key_exists('_scroll_id', $response)) {
                     throw new Exception('Scroll id not found');

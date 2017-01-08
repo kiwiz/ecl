@@ -70,7 +70,7 @@ class SymbolTable implements \ArrayAccess {
         if(!$this->offsetExists($key)) {
             throw new KeyNotFoundException($key);
         }
-        return $this->table[$key];
+        return $this->table[$key]->getValue();
     }
     /**
      * Set the value for a symbol.
@@ -78,7 +78,11 @@ class SymbolTable implements \ArrayAccess {
      * @param Value $value Symbol value.
      */
     public function offsetSet($key, $val) {
-        $this->table[$key] = $val;
+        if(!$this->offsetExists($key)) {
+            $this->table[$key] = new Value($val);
+        } else {
+            $this->table[$key]->setValue($val);
+        }
     }
     /**
      * Check if a symbol exists.
@@ -102,6 +106,41 @@ class SymbolTable implements \ArrayAccess {
      */
     public function getKeys() {
         return array_keys($this->table);
+    }
+}
+
+class Value {
+    /** @var mixed Value */
+    private $val = null;
+    /** @var int Version */
+    private $version = 0;
+    /** @var array Tags */
+    private $tags = [];
+
+    public function __construct($val, $version=1) {
+        $this->val = $val;
+        $this->version = $version;
+    }
+
+    public function &getValue() {
+        return $this->val;
+    }
+
+    public function setValue($val) {
+        ++$this->version;
+        $this->val = $val;
+    }
+
+    public function setTag($tag) {
+        $this->tags[$tag] = null;
+    }
+
+    public function delTag($tag) {
+        unset($this->tags[$tag]);
+    }
+
+    public function checkTag($tag) {
+        return array_key_exists($tag, $this->tags);
     }
 }
 
