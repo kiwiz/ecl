@@ -6,7 +6,7 @@
     },
     "require": {
         "symfony/expression-language": "^3.1",
-        "elasticsearch/elasticsearch": "^2.2",
+        "elasticsearch/elasticsearch": "^5.0",
         "codeclimate/php-test-reporter": "^0.3.2"
     },
     "require-dev": {

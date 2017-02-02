@@ -162,7 +162,7 @@ class Elasticsearch extends \ECL\Command {
         $query_body = [
             'size' => 100,
             'query' => [
-                'filtered' => [
+                'bool' => [
                     'filter' => $this->constructFilter(
                         $table, $filters, $date_field, $from, $to
                     )
@@ -209,7 +209,7 @@ class Elasticsearch extends \ECL\Command {
                 'format' => 'epoch_second',
             ]]];
             if(count($filters) > 0) {
-                $filters = ['and' => [$filters, $filter]];
+                $filters = ['bool' => ['filter' => [$filters, $filter]]];
             } else {
                 $filters = $filter;
             }
