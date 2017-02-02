@@ -45,4 +45,19 @@ class MapTest extends PHPUnit_Framework_TestCase {
         ];
         $this->assertSame($expected, $res->getAll());
     }
+
+    public function testFields() {
+        $command = new \ECL\Command\Map([
+            [\ECL\Command\Map::T_FIELDS, ['a']],
+            [\ECL\Command\Map::T_FIELDS, ['a', 'b']],
+        ]);
+        $res = $command->process(Helper::getSymbolTable([
+            ['a' => '1', 'x' => '3', 'd' => '4'],
+        ]));
+
+        $expected = [
+            ['a' => '1'],
+        ];
+        $this->assertSame($expected, $res->getAll());
+    }
 }
