@@ -204,6 +204,10 @@ map AAA+BBB=CCC
 map FIELD=`EXPR`
 ```
 
+```
+map [AAA,BBB,CCC]
+```
+
 Map field names and values in the results. You can specify multiple clauses in a single Command and they'll be executed in order.
 
 Example: `map count=`_ + 3` _type=type -_type`

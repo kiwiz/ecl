@@ -16,6 +16,8 @@ class Map extends \ECL\Command {
     const T_DELETE = 1;
     /** Map a key via an expression. */
     const T_EXPR = 2;
+    /** Extract fields. */
+    const T_FIELDS = 3;
 
     /**
      * @param array $clauses Map operations.
@@ -58,6 +60,18 @@ class Map extends \ECL\Command {
                         $el = new \ECL\ExpressionLanguage;
                         $entry[$key] = $el->evaluate($expr, new \ECL\ArrayUnion([['_' => $entry[$key]], $table]));
                     }
+                    break;
+                case self::T_FIELDS:
+                    // Filter keys
+                    $new_entry = [];
+                    foreach($clause[1] as $key) {
+                        $key = $table->resolve($key, \ECL\Symbol::T_STR);
+                        $val = \ECL\Util::get($entry, $key);
+                        if(!is_null($val)) {
+                            $new_entry[$key] = $val;
+                        }
+                    }
+                    $entry = $new_entry;
                     break;
                 }
             }
