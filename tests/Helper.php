@@ -1,5 +1,7 @@
 <?php
 
+require_once(realpath(__DIR__ . '/../vendor/autoload.php'));
+
 class Helper {
     public static function getSymbolTable($data) {
         $symtab = new \ECL\SymbolTable;

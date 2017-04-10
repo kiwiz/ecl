@@ -28,8 +28,8 @@ abstract class Agg {
         $query_key = '$_' . $key;
 
         $options = [];
-        foreach($this->options as $key=>$val) {
-            $options[$key] = $table->resolve($val);
+        foreach($this->options as $optkey=>$val) {
+            $options[$optkey] = $table->resolve($val);
         }
         $options = array_merge($options, ['field' => $key]);
         $agg = [static::TYPE => $options];

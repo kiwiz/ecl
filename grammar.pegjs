@@ -138,10 +138,11 @@ Elasticsearch = 'es' SEP source:Key opts:(_ ElasticsearchOpts)? _ query:Elastics
     TermsAgg = 'terms' _ key:KeyVar options:(_ AggOptions)? subagg:(_? '|' _? ElasticsearchAgg)? { return new Command\Elasticsearch\Agg\Bucket\Terms($key, $options ? $options[1]:[], $subagg ? $subagg[3]:null); }
 
 Map = 'map' _ first:MapClause rest:(_ MapClause)* { return new Command\Map(Util::combine($first, $rest, 1)); }
-  MapClause = MapCombine / MapDelete / MapExpr
+  MapClause = MapCombine / MapDelete / MapExpr / MapFields
     MapCombine = first:KeyVar rest:('+' KeyVar)* '=' target:KeyVar { return [Command\Map::T_COMBINE, Util::combine($first, $rest, 1), $target]; }
     MapDelete = '-' target:KeyVar { return [Command\Map::T_DELETE, $target]; }
     MapExpr = target:KeyVar '=' expr:ExprVar { return [Command\Map::T_EXPR, $target, $expr]; }
+    MapFields = '[' first:KeyVar rest:(',' KeyVar)* ']' { return [Command\Map::T_FIELDS, Util::combine($first, $rest, 1)]; }
 
 Sort = 'sort' _ sort:(SortExpr / SortFields) { return $sort; }
   SortExpr = expr:ExprVar { return new Command\Sort\Expr($expr); }
