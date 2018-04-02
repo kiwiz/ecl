@@ -222,7 +222,7 @@ es:SRC QUERY
 es:SRC OPTS QUERY | agg:ATYPE AFIELD AOPTS
 ```
 
-Returns data from ES.
+Returns data from ES. Supports ES2.x-ES6.x
 
 `SRC`: The source (usually `logstash`).
 `OPTS`: Search options.

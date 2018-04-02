@@ -12,7 +12,7 @@ class ArrayUnion implements \ArrayAccess {
     private $arrays = [];
 
     /**
-     * @param array[] Arrays.
+     * @param array[] $arrays Arrays.
      */
     public function __construct(array $arrays) {
         $this->arrays = $arrays;
@@ -48,7 +48,7 @@ class ArrayUnion implements \ArrayAccess {
      * @param string $key Symbol name.
      * @param Value $value Symbol value.
      */
-    public function offsetSet($key, $val) {
+    public function offsetSet($key, $value) {
         throw new NotImplementedException;
     }
     /**

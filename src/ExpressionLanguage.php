@@ -47,7 +47,7 @@ class ExpressionLanguage extends SEL\ExpressionLanguage {
      * Evaluate an expression.
      * Overridden to allow passing in a SymbolTable.
      * @param \Symfony\Component\ExpressionLanguage\Expression|string $expression
-     * @param SymbolTable|array $values
+     * @param SymbolTable|array|\ArrayAccess $values
      * @return mixed
      */
     public function evaluate($expression, $values=[]) {

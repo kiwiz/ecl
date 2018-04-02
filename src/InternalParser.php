@@ -36,6 +36,34 @@ class SyntaxError extends \Exception
     }
 };}
 
+/* Location */
+if (!class_exists("ECL\\Location", false)){
+class Location
+{
+    public $start;
+    public $end;
+    public function __construct($start, $end)
+    {
+        $this->start = $start;
+        $this->end = $end;
+    }
+};}
+
+/* LocationPosition */
+if (!class_exists("ECL\\LocationPosition", false)){
+class LocationPosition
+{
+    public $offset;
+    public $line;
+    public $column;
+    public function __construct($offset, $line, $column)
+    {
+        $this->offset = $offset;
+        $this->line = $line;
+        $this->column = $column;
+    }
+};}
+
 class InternalParser{
 
 
@@ -63,7 +91,7 @@ class InternalParser{
 
 
     private function text() {
-      return substr($this->input, $this->peg_reportedPos, $this->peg_reportedPos + $this->peg_currPos);
+      return mb_substr($this->input, $this->peg_reportedPos, $this->peg_currPos - $this->peg_reportedPos, "UTF-8");
     }
 
     private function offset() {
@@ -78,6 +106,17 @@ class InternalParser{
     private function column() {
       $compute_pd = $this->peg_computePosDetails($this->peg_reportedPos);
       return $compute_pd["column"];
+    }
+
+    private function location(){  
+        $offset_start = $this->peg_reportedPos;
+        $offset_end = $this->peg_currPos;
+        $compute_pd_start = $this->peg_computePosDetails($offset_start);
+        $compute_pd_end = $this->peg_computePosDetails($offset_end);
+        return new Location(
+            new LocationPosition($offset_start, $compute_pd_start["line"], $compute_pd_start["column"]),
+            new LocationPosition($offset_end, $compute_pd_end["line"], $compute_pd_end["column"])
+        );
     }
 
     private function expected($description) {
@@ -7080,8 +7119,8 @@ class InternalParser{
     $this->peg_c70 = array( "type" => "class", "value" => "[^\\/]", "description" => "[^\\/]" );
     $this->peg_c71 = "/^[a-zA-Z0-9._-]/";
     $this->peg_c72 = array( "type" => "class", "value" => "[a-zA-Z0-9._\\-]", "description" => "[a-zA-Z0-9._\\-]" );
-    $this->peg_c73 = "$";
-    $this->peg_c74 = array( "type" => "literal", "value" => "$", "description" => "\"$\"" );
+    $this->peg_c73 = "\$";
+    $this->peg_c74 = array( "type" => "literal", "value" => "\$", "description" => "\"\\\$\"" );
     $this->peg_c75 = "/^[a-zA-Z0-9_]/";
     $this->peg_c76 = array( "type" => "class", "value" => "[a-zA-Z0-9_]", "description" => "[a-zA-Z0-9_]" );
     $this->peg_c77 = function($var) { return new Symbol($var); };
@@ -7137,7 +7176,7 @@ class InternalParser{
     $this->peg_c127 = "!";
     $this->peg_c128 = array( "type" => "literal", "value" => "!", "description" => "\"!\"" );
     $this->peg_c129 = function($field,$val) { return [$field, $val]; };
-    $this->peg_c130 = function() { return ['match_all' => []]; };
+    $this->peg_c130 = function() { return ['match_all' => (object)[]]; };
     $this->peg_c131 = "agg";
     $this->peg_c132 = array( "type" => "literal", "value" => "agg", "description" => "\"agg\"" );
     $this->peg_c133 = function($agg) { return $agg; };
@@ -7265,19 +7304,19 @@ class InternalParser{
     $this->peg_c255 = function($target) { return new Command\Store($target); };
     $this->peg_c256 = "OR";
     $this->peg_c257 = array( "type" => "literal", "value" => "OR", "description" => "\"OR\"" );
-    $this->peg_c258 = function($a,$b) { return (isset($b) && count($b)) ? ['or' => Util::combine($a, $b, 3)]:$a; };
+    $this->peg_c258 = function($a,$b) { return (isset($b) && count($b)) ? ['bool' => ['should' => Util::combine($a, $b, 3)]]:$a; };
     $this->peg_c259 = "AND";
     $this->peg_c260 = array( "type" => "literal", "value" => "AND", "description" => "\"AND\"" );
-    $this->peg_c261 = function($a,$b) { return (isset($b) && count($b)) ? ['and' => Util::combine($a, $b, 2)]:$a; };
+    $this->peg_c261 = function($a,$b) { return (isset($b) && count($b)) ? ['bool' => ['filter' => Util::combine($a, $b, 2)]]:$a; };
     $this->peg_c262 = "NOT";
     $this->peg_c263 = array( "type" => "literal", "value" => "NOT", "description" => "\"NOT\"" );
-    $this->peg_c264 = function($a,$b) { return (isset($b) && count($b)) ? ['and' => [$a, ['not' => ['filter' => $b[3]]]]]:$a; };
+    $this->peg_c264 = function($a,$b) { return (isset($b) && count($b)) ? ['bool' => ['filter' => $a, 'must_not' => $b[3]]]:$a; };
     $this->peg_c265 = "(";
     $this->peg_c266 = array( "type" => "literal", "value" => "(", "description" => "\"(\"" );
     $this->peg_c267 = ")";
     $this->peg_c268 = array( "type" => "literal", "value" => ")", "description" => "\")\"" );
-    $this->peg_c269 = function($neg,$expr) { return $neg ? ['not' => ['filter' => $expr]]:$expr; };
-    $this->peg_c270 = function($neg,$clause) { return $neg ? ['not' => ['filter' => $clause]]:$clause; };
+    $this->peg_c269 = function($neg,$expr) { return $neg ? ['bool' => ['must_not' => $expr]]:$expr; };
+    $this->peg_c270 = function($neg,$clause) { return $neg ? ['bool' => ['must_not' => $clause]]:$clause; };
     $this->peg_c271 = "_exists_";
     $this->peg_c272 = array( "type" => "literal", "value" => "_exists_", "description" => "\"_exists_\"" );
     $this->peg_c273 = function($field) { return ['exists' => ['field' => $field]]; };
@@ -7300,7 +7339,7 @@ class InternalParser{
     $this->peg_c285 = function($field,$regex) { return ['regexp' => [$field => $regex]]; };
     $this->peg_c286 = function($field,$first,$rest) { return ['terms' => [$field => Util::combine($first, $rest, 1)]]; };
     $this->peg_c287 = function($field,$val) { return ['terms' => [$field => $val]]; };
-    $this->peg_c288 = function($field,$val) { return ['query' => ['query_string' => ['default_field' => $field, 'query' => $val]]]; };
+    $this->peg_c288 = function($field,$val) { return ['query_string' => ['default_field' => $field, 'query' => $val]]; };
     $this->peg_c289 = function() { return 'lte'; };
     $this->peg_c290 = function() { return 'lt'; };
     $this->peg_c291 = function() { return 'gte'; };

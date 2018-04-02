@@ -15,7 +15,7 @@ class Cond extends \ECL\Statement {
     private $neg_case = [];
 
     /**
-     * @param \ECL\Symbol|string SEL expression
+     * @param \ECL\Symbol|string $expr SEL expression
      * @param \ECL\Statement[] $pos_case Positive branch
      * @param \ECL\Statement[] $pos_case Negative branch
      */

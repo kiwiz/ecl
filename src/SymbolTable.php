@@ -77,11 +77,11 @@ class SymbolTable implements \ArrayAccess {
      * @param string $key Symbol name.
      * @param Value $value Symbol value.
      */
-    public function offsetSet($key, $val) {
+    public function offsetSet($key, $value) {
         if(!$this->offsetExists($key)) {
-            $this->table[$key] = new Value($val);
+            $this->table[$key] = new Value($value);
         } else {
-            $this->table[$key]->setValue($val);
+            $this->table[$key]->setValue($value);
         }
     }
     /**

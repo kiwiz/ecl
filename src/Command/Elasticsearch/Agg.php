@@ -15,9 +15,9 @@ abstract class Agg {
     /**
      * @param string $key The key to aggregate over.
      * @param array $options Aggregation options.
-     * @param \ECL\Command\Elasticsearch\Agg $agg Sub aggregation.
+     * @param \ECL\Command\Elasticsearch\Agg|null $agg Sub aggregation.
      */
-    public function __construct($key, array $options=[], Agg $agg=null) {
+    public function __construct($key, array $options=[], \ECL\Command\Elasticsearch\Agg $agg=null) {
         $this->key = $key;
         $this->options = $options;
         $this->agg = $agg;

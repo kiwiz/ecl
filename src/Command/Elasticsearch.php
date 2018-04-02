@@ -38,7 +38,7 @@ class Elasticsearch extends \ECL\Command {
 
     /**
      * Get the current list of settings.
-     * @param array $settings List of settings.
+     * @return array List of settings.
      */
     public function getSettings() {
         return $this->settings;
@@ -162,7 +162,7 @@ class Elasticsearch extends \ECL\Command {
         $query_body = [
             'size' => 100,
             'query' => [
-                'filtered' => [
+                'bool' => [
                     'filter' => $this->constructFilter(
                         $table, $filters, $date_field, $from, $to
                     )
@@ -209,7 +209,7 @@ class Elasticsearch extends \ECL\Command {
                 'format' => 'epoch_second',
             ]]];
             if(count($filters) > 0) {
-                $filters = ['and' => [$filters, $filter]];
+                $filters = ['bool' => ['filter' => [$filters, $filter]]];
             } else {
                 $filters = $filter;
             }
@@ -219,8 +219,8 @@ class Elasticsearch extends \ECL\Command {
     }
 
     /**
-     * @param \ECL\SymbolTable
-     * @param array|\ECL\Symbol
+     * @param \ECL\SymbolTable $table
+     * @param array|\ECL\Symbol $node
      */
     private function resolveFilter(\ECL\SymbolTable $table, $node) {
         if(is_array($node)) {

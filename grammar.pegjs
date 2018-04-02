@@ -105,7 +105,7 @@ Elasticsearch = 'es' SEP source:Key opts:(_ ElasticsearchOpts)? _ query:Elastics
   ElasticsearchOpts = first:ElasticsearchOption rest:(_ ElasticsearchOption)* { return Util::assoc($first, $rest, 1); }
     ElasticsearchOption = '!' field:Key SEP val:PrimVar { return [$field, $val]; }
   ElasticsearchQuery
-    = '*' { return ['match_all' => []]; }
+    = '*' { return ['match_all' => (object)[]]; }
     / ElasticsearchQueryOR
   ElasticsearchAgg = 'agg' SEP agg:(
     AvgAgg / CardinalityAgg / ExtendedStatsAgg / GeoBoundsAgg / GeoCentroidAgg / AvgAgg / MaxAgg / MinAgg / PercentilesAgg / PercentileRanksAgg / StatsAgg / SumAgg / TopHitsAgg / ValueCountAgg /
@@ -174,12 +174,12 @@ Store = '>' _? target:Key { return new Command\Store($target); }
 /**
  * Query clauses
  */
-ElasticsearchQueryOR = a:ElasticsearchQueryAND b:(_ 'OR' _ ElasticsearchQueryAND)* { return (isset($b) && count($b)) ? ['or' => Util::combine($a, $b, 3)]:$a; }
-ElasticsearchQueryAND = a:ElasticsearchQueryNOT b:((_ 'AND')? _ ElasticsearchQueryNOT)* { return (isset($b) && count($b)) ? ['and' => Util::combine($a, $b, 2)]:$a; }
-ElasticsearchQueryNOT = a:ElasticsearchQueryUnaryNOT b:(_ 'NOT' _ ElasticsearchQueryUnaryNOT)? { return (isset($b) && count($b)) ? ['and' => [$a, ['not' => ['filter' => $b[3]]]]]:$a; }
+ElasticsearchQueryOR = a:ElasticsearchQueryAND b:(_ 'OR' _ ElasticsearchQueryAND)* { return (isset($b) && count($b)) ? ['bool' => ['should' => Util::combine($a, $b, 3)]]:$a; }
+ElasticsearchQueryAND = a:ElasticsearchQueryNOT b:((_ 'AND')? _ ElasticsearchQueryNOT)* { return (isset($b) && count($b)) ? ['bool' => ['filter' => Util::combine($a, $b, 2)]]:$a; }
+ElasticsearchQueryNOT = a:ElasticsearchQueryUnaryNOT b:(_ 'NOT' _ ElasticsearchQueryUnaryNOT)? { return (isset($b) && count($b)) ? ['bool' => ['filter' => $a, 'must_not' => $b[3]]]:$a; }
 ElasticsearchQueryUnaryNOT
-  = neg:'-'? '(' _? expr:ElasticsearchQuery _? ')' { return $neg ? ['not' => ['filter' => $expr]]:$expr; }
-  / neg:'-'? clause:ElasticsearchQueryClause { return $neg ? ['not' => ['filter' => $clause]]:$clause; }
+  = neg:'-'? '(' _? expr:ElasticsearchQuery _? ')' { return $neg ? ['bool' => ['must_not' => $expr]]:$expr; }
+  / neg:'-'? clause:ElasticsearchQueryClause { return $neg ? ['bool' => ['must_not' => $clause]]:$clause; }
 
 ElasticsearchQueryClause
   = '_exists_' SEP field:KeyVar { return ['exists' => ['field' => $field]]; }
@@ -195,7 +195,7 @@ ElasticsearchQueryClause
   / field:Key SEP '(' _? first:Escaped rest:(_ Escaped)* _? ')' { return ['terms' => [$field => Util::combine($first, $rest, 1)]]; }
 
   / field:Key SEP val:PathVar { return ['terms' => [$field => $val]]; }
-  / field:Key SEP val:WCValVar { return ['query' => ['query_string' => ['default_field' => $field, 'query' => $val]]]; }
+  / field:Key SEP val:WCValVar { return ['query_string' => ['default_field' => $field, 'query' => $val]]; }
 ElasticsearchQueryRangeLow
   = '[' { return 'lte'; }
   / '{' { return 'lt'; }

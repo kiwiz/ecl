@@ -19,7 +19,7 @@ class CommandList extends \ECL\Statement {
 
     /**
      * Process the list of Commands.
-     * @param SymbolTable $table The global SymbolTable.
+     * @param \ECL\SymbolTable $table The global SymbolTable.
      * @return \ECL\ResultSet[] The result from the last Command or an empty array.
      */
     public function process(\ECL\SymbolTable $table) {

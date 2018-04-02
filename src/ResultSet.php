@@ -72,7 +72,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate {
     }
     /**
      * Delete an entry.
-     * @param int $n Index.
+     * @param int $key Index.
      */
     public function offsetUnset($key) {
         throw new \RuntimeException('Unsupported');
@@ -101,7 +101,7 @@ class ResultSetIterator implements \Iterator {
     private $result;
 
     /**
-     * @param ResultSet
+     * @param ResultSet $result
      */
     public function __construct($result) {
         $this->result = $result;

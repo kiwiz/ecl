@@ -9,7 +9,7 @@ $es_builder = new \ECL\Command\Elasticsearch\Builder;
 $es_builder->setSources([
     'logstash' => [
         'hosts' => ['localhost:9200'],
-        'index' => 'logstash',
+        'index' => '[logstash]-Y.m.d',
         'date_based' => true,
         'date_field' => '@timestamp',
     ]
@@ -26,7 +26,6 @@ while(($cmd_str = readline('> ')) !== false) {
     if($cmd_str == 'exit') {
         break;
     }
-
 
     readline_add_history($cmd_str);
     try {

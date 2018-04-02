@@ -22,8 +22,9 @@ class Join extends \ECL\Command {
     const T_RIGHT = 2;
 
     /**
-     * @param int $type Joining ResultSet.
+     * @param string $source Source name.
      * @param string[] $keys Joining keys.
+     * @param int $type Joining ResultSet.
      */
     public function __construct($source, $keys, $type) {
         $this->source = $source;
