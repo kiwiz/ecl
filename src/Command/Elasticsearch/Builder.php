@@ -8,13 +8,16 @@ namespace ECL\Command\Elasticsearch;
  */
 class Builder {
     /**
-     * @var array[] Mapping of ES sources, keyed on the name of the source.
+     * @var array[] Mapping of ES sources, keyed on the name of the source
      * Each entry has the following values:
      * host - The source host
      * index_host - The lookup table host
      * index - The source index
+     * ssl_cert - Path to an ssl certificate if your cluster uses HTTPS
+     * ssl_client_cert - Path to an ssl client certificate if your cluster uses HTTPS
+     * ssl_client_key - Path to an ssl client key if your cluster uses HTTPS
      * type - The source type
-     * date_based - Whether the source index is date based.
+     * date_based - Whether the source index is date based
      * date_field - Field to apply date ranges to.
      */
     protected $sources = [];

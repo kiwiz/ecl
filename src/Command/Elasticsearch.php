@@ -53,6 +53,10 @@ class Elasticsearch extends \ECL\Command {
 
         $hosts = \ECL\Util::get($settings, 'hosts', []);
         $index_hosts = \ECL\Util::get($settings, 'index_hosts', []);
+        $ssl_cert = \ECL\Util::get($settings, 'ssl_cert', null);
+        $ssl_client_key = \ECL\Util::get($settings, 'ssl_client_key', null);
+        $ssl_client_cert = \ECL\Util::get($settings, 'ssl_client_cert', null);
+
         if(count($index_hosts) == 0) {
             $index_hosts = $hosts;
         }
@@ -61,13 +65,25 @@ class Elasticsearch extends \ECL\Command {
         if(count($hosts)) {
             $cb->setHosts($hosts);
         }
-        $this->client = $cb->build();
 
-        $cb = \Elasticsearch\ClientBuilder::create();
+        $icb = \Elasticsearch\ClientBuilder::create();
         if(count($index_hosts)) {
-            $cb->setHosts($index_hosts);
+            $icb->setHosts($index_hosts);
         }
-        $this->index_client = $cb->build();
+
+        if($ssl_cert !== null) {
+            $cb->setSSLVerification($ssl_cert);
+            $icb->setSSLVerification($ssl_cert);
+        }
+        if($ssl_client_key !== null && $ssl_client_cert !== null) {
+            $cb->setSSLKey($ssl_client_key);
+            $cb->setSSLCert($ssl_client_cert);
+            $icb->setSSLKey($ssl_client_key);
+            $icb->setSSLCert($ssl_client_cert);
+        }
+
+        $this->client = $cb->build();
+        $this->index_client = $icb->build();
     }
 
     /**
